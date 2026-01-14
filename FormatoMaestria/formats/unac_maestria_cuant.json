@@ -1,0 +1,89 @@
+{
+  "id": "unac_maestria_cuant",
+  "universidad": "UNAC",
+  "tipo": "informe_posgrado",
+  "version": "1.0.0",
+  "descripcion": "Plantilla Maestría (cuantitativo) con carátula, tabla de contenido, índice de tablas/figuras y estructura base.",
+  "output_name": "UNAC_Maestria_Template.docx",
+  "logo_path": "assets/Logo_UNAC.jpeg",
+
+  "page_setup": {
+    "page": "A4",
+    "margins_cm": { "left": 3.5, "right": 2.5, "top": 3.0, "bottom": 3.0 },
+    "font": { "name": "Arial", "size_pt": 12 }
+  },
+
+  "cover": {
+    "universidad_linea": "UNIVERSIDAD NACIONAL DEL CALLAO",
+    "unidad": "(ESCUELA DE POSGRADO, UNIDAD DE POSGRADO ...)",
+    "titulo": "TÍTULO DEL INFORME FINAL y/o TESIS",
+    "grado_maestria": "MAESTRO EN <NOMBRE EXACTO DEL PROGRAMA>",
+    "autor": "NOMBRES Y APELLIDOS DEL / LOS AUTOR(ES)",
+    "asesor": "NOMBRES Y APELLIDOS DEL / LOS ASESOR(ES)",
+    "linea": "XXXXXXXXXXXXXX",
+    "ciudad": "Callao",
+    "anio": "2026",
+    "pais": "PERÚ",
+
+    "logo_width_cm": 3.5,
+    "title_size_pt": 14,
+    "text_size_pt": 12
+  },
+
+  "toc": { "min_level": 1, "max_level": 3 },
+  "include_list_of_tables": true,
+  "include_list_of_figures": true,
+
+  "structure_rules": {
+    "add_placeholder_after_heading": true,
+    "page_break_after_level_1": true
+  },
+
+  "structure": [
+    { "level": 1, "title": "DEDICATORIA" },
+    { "level": 1, "title": "AGRADECIMIENTO" },
+    { "level": 1, "title": "RESUMEN" },
+    { "level": 1, "title": "ABSTRACT" },
+
+    { "level": 1, "title": "INTRODUCCIÓN" },
+
+    { "level": 1, "title": "I. PLANTEAMIENTO DEL PROBLEMA" },
+    { "level": 2, "title": "1.1. Descripción de la realidad problemática." },
+    { "level": 2, "title": "1.2. Formulación del problema (general y específicos)." },
+    { "level": 2, "title": "1.3. Objetivos (general y específicos)." },
+    { "level": 2, "title": "1.4. Justificación." },
+    { "level": 2, "title": "1.5. Delimitantes (teórico, temporal, espacial)." },
+
+    { "level": 1, "title": "II. MARCO TEÓRICO" },
+    { "level": 2, "title": "2.1. Antecedentes (internacional y nacional)." },
+    { "level": 2, "title": "2.2. Bases teóricas." },
+    { "level": 2, "title": "2.3. Marco conceptual." },
+    { "level": 2, "title": "2.4. Definición de términos básicos." },
+
+    { "level": 1, "title": "III. HIPÓTESIS Y VARIABLES" },
+    { "level": 2, "title": "3.1. Hipótesis (general y específicas)." },
+    { "level": 2, "title": "3.1.1. Operacionalización de variable." },
+
+    { "level": 1, "title": "IV. METODOLOGÍA DEL PROYECTO" },
+    { "level": 2, "title": "4.1. Diseño metodológico" },
+    { "level": 2, "title": "4.2. Método de investigación" },
+    { "level": 2, "title": "4.3. Población y muestra" },
+    { "level": 2, "title": "4.4. Lugar de estudio y periodo desarrollado" },
+    { "level": 2, "title": "4.5. Técnicas e instrumentos" },
+    { "level": 2, "title": "4.6. Análisis y procesamiento de datos" },
+    { "level": 2, "title": "4.7. Aspectos éticos en investigación" },
+
+    { "level": 1, "title": "RESULTADOS" },
+    { "level": 2, "title": "5.1. Resultados descriptivos." },
+    { "level": 2, "title": "5.2. Resultados inferenciales." },
+
+    { "level": 1, "title": "V. DISCUSIÓN DE RESULTADOS" },
+    { "level": 2, "title": "6.1. Contrastación y demostración de la hipótesis." },
+    { "level": 2, "title": "6.2. Contrastación con otros estudios." },
+
+    { "level": 1, "title": "VI. CONCLUSIONES" },
+    { "level": 1, "title": "VII. RECOMENDACIONES" },
+    { "level": 1, "title": "VIII. REFERENCIAS BIBLIOGRÁFICAS" },
+    { "level": 1, "title": "ANEXOS" }
+  ]
+}

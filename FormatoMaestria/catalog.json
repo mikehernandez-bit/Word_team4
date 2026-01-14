@@ -1,0 +1,13 @@
+[
+  {
+    "id": "unac_maestria_cuant",
+    "universidad": "UNAC",
+    "tipo": "informe_posgrado",
+    "version": "1.0.0",
+    "descripcion": "Plantilla Maestría (cuantitativo) con carátula, tabla de contenido, índice de tablas/figuras y estructura base.",
+    "file": "UNAC_Maestria_Template.docx",
+    "format": "docx",
+    "size_bytes": 52241,
+    "last_modified": "2026-01-14T18:17:23"
+  }
+]
