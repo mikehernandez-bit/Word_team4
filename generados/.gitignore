@@ -1,0 +1,3 @@
+# Ignorar todos los archivos generados
+*.docx
+*.doc
