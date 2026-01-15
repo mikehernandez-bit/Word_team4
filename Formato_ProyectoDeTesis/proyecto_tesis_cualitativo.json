@@ -1,0 +1,126 @@
+{
+  "configuracion": {
+    "nombre_archivo": "Proyecto_Investigacion_Cualitativo_UNAC.docx",
+    "fuente_normal": "Times New Roman",
+    "tamano_normal": 12,
+    "fuente_tabla": "Arial",
+    "tamano_tabla": 9,
+    "ruta_logo": "Formato_ProyectoDeTesis/logo_unac.png",
+    "color_encabezado": "BDD7EE",
+    "metadatos_unac": {
+      "proceso": "INVESTIGACIÓN CIENTÍFICA Y TECNOLÓGICA",
+      "registro": "PROYECTO DE INVESTIGACIÓN - TESIS",
+      "codigo": "M.IDIE.01/R4",
+      "version": "01",
+      "fecha": "14/12/2023"
+    }
+  },
+  "paginas": [
+    {
+      "tipo": "caratula",
+      "titulo": "CARÁTULA",
+      "items": [
+        "TÍTULO (Contiene las variables a investigar)",
+        "AUTOR(ES)",
+        "LUGAR Y FECHA",
+        "PÁGINA DE RESPETO"
+      ]
+    },
+    {
+      "tipo": "lista",
+      "titulo": "INFORMACIÓN BÁSICA",
+      "items": [
+        "FACULTAD",
+        "UNIDAD DE INVESTIGACIÓN TÍTULO",
+        "AUTOR (es) / CÓDIGO ORCID / DNI",
+        "ASESOR CO ASESOR / CÓDIGO ORCID / DNI",
+        "LUGAR DE EJECUCIÓN",
+        "UNIDAD DE ANÁLISIS",
+        "TIPO / ENFOQUE / DISEÑO DE INVESTIGACIÓN",
+        "TEMA OCDE"
+      ]
+    },
+    {
+      "tipo": "indice",
+      "titulo": "ÍNDICE",
+      "subtitulo": "(contenido, tablas, figuras, abreviaturas)",
+      "items": [
+        {"texto": "INTRODUCCIÓN", "indent": 0, "bold": true},
+        {"texto": "I. PLANTEAMIENTO DEL PROBLEMA", "indent": 0, "bold": true},
+        {"texto": "II. REVISIÓN DE LITERATURA", "indent": 0, "bold": true},
+        {"texto": "III. METODOLOGÍA DEL PROYECTO", "indent": 0, "bold": true},
+        {"texto": "IV. CRONOGRAMA DE ACTIVIDADES", "indent": 0, "bold": true},
+        {"texto": "V. PRESUPUESTO", "indent": 0, "bold": true},
+        {"texto": "VI. REFERENCIAS BIBLIOGRÁFICAS", "indent": 0, "bold": true},
+        {"texto": "VII. ANEXOS", "indent": 0, "bold": true}
+      ]
+    },
+    {
+      "tipo": "contenido_detallado",
+      "capitulos": [
+        {
+          "titulo": "INTRODUCCIÓN",
+          "secciones": [
+            {"sub": "", "texto": "Presentación general de la investigación cualitativa."}
+          ]
+        },
+        {
+          "titulo": "I. PLANTEAMIENTO DEL PROBLEMA",
+          "secciones": [
+            {"sub": "1.1. Descripción de la realidad problemática", "texto": "Seleccionar el problema en el contexto de las líneas de investigación prioritarias o transversales."},
+            {"sub": "1.2. Formulación del problema", "texto": "Definir el problema general y específicos."},
+            {"sub": "1.3. Objetivos", "texto": "Objetivo general y objetivos específicos."},
+            {"sub": "1.4. Justificación", "texto": "De acuerdo a la naturaleza del problema."},
+            {"sub": "1.5. Delimitantes de la investigación", "texto": "Teórica, temporal, espacial."}
+          ]
+        },
+        {
+          "titulo": "II. REVISIÓN DE LITERATURA",
+          "secciones": [
+            {"sub": "2.1. Antecedentes", "texto": "Investigaciones previas a nivel internacional y nacional."},
+            {"sub": "2.2. Marco conceptual", "texto": "Elabora nuevos constructos fundamentados de las teorías con relación al problema de investigación."},
+            {"sub": "2.3. Definición de términos básicos", "texto": "Funcionales a la investigación del problema."}
+          ]
+        },
+        {
+          "titulo": "III. METODOLOGÍA DEL PROYECTO",
+          "secciones": [
+            {"sub": "3.1. Categorías, Subcategorías y matriz de categorización apriorística", "texto": "Definición de las categorías de análisis."},
+            {"sub": "3.2. Escenario de estudio", "texto": "Entorno donde se realiza la investigación."},
+            {"sub": "3.3. Participantes", "texto": "Sujetos involucrados en el estudio cualitativo."},
+            {"sub": "3.4. Técnicas e instrumentos de recolección de datos", "texto": "Herramientas para obtener información."},
+            {"sub": "3.5. Procedimiento", "texto": "Pasos para la ejecución de la investigación."},
+            {"sub": "3.6. Rigor científico", "texto": "Criterios de validez y fiabilidad cualitativa."},
+            {"sub": "3.7. Método de análisis de datos", "texto": "Proceso de interpretación de la información."},
+            {"sub": "3.8. Aspectos Éticos en Investigación", "texto": "Cumplimiento de normas éticas vigentes."}
+          ]
+        },
+        {
+          "titulo": "IV. CRONOGRAMA DE ACTIVIDADES",
+          "secciones": [
+            {"sub": "", "texto": "Calendarizar en meses utilizando Diagrama de Gantt."}
+          ]
+        },
+        {
+          "titulo": "V. PRESUPUESTO",
+          "secciones": [
+            {"sub": "", "texto": "Financiamiento y Costo real en soles o moneda equivalente."}
+          ]
+        },
+        {
+          "titulo": "VI. REFERENCIAS BIBLIOGRÁFICAS",
+          "secciones": [
+            {"sub": "", "texto": "De acuerdo a normas internacionales (APA, Vancouver) utilizando gestores como Mendeley, Zotero o Word."}
+          ]
+        },
+        {
+          "titulo": "VII. ANEXOS",
+          "secciones": [
+            {"sub": "Matriz de categorización", "texto": ""},
+            {"sub": "Propuesta de instrumentos de recolección de datos", "texto": ""}
+          ]
+        }
+      ]
+    }
+  ]
+}
