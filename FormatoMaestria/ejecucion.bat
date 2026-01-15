@@ -3,9 +3,7 @@ setlocal
 
 cd /d "%~dp0"
 
-set "DEFAULT_CONFIG=formats\unac_maestria_cuant.json"
 set "CONFIG=%~1"
-if "%CONFIG%"=="" set "CONFIG=%DEFAULT_CONFIG%"
 
 where py >nul 2>nul
 if not errorlevel 1 (
@@ -13,7 +11,11 @@ if not errorlevel 1 (
   if errorlevel 1 (
     py -3 -m pip install --user python-docx
   )
-  py -3 generate_from_json.py "%CONFIG%"
+  if "%CONFIG%"=="" (
+    py -3 generate_from_json.py
+  ) else (
+    py -3 generate_from_json.py "%CONFIG%"
+  )
   goto end
 )
 
@@ -23,7 +25,11 @@ if not errorlevel 1 (
   if errorlevel 1 (
     python -m pip install --user python-docx
   )
-  python generate_from_json.py "%CONFIG%"
+  if "%CONFIG%"=="" (
+    python generate_from_json.py
+  ) else (
+    python generate_from_json.py "%CONFIG%"
+  )
   goto end
 )
 
