@@ -1,0 +1,134 @@
+{
+  "configuracion": {
+    "nombre_archivo": "Proyecto_UNAC_Final.docx",
+    "fuente_normal": "Times New Roman",
+    "tamano_normal": 12,
+    "fuente_tabla": "Arial",
+    "tamano_tabla": 9,
+    "ruta_logo": "Formato_ProyectoDeTesis/logo_unac.png",
+    "color_encabezado": "BDD7EE"
+  },
+  "paginas": [
+    {
+      "tipo": "caratula",
+      "titulo": "CARÁTULA",
+      "items": [
+        "● TÍTULO (Contiene las variables a investigar)",
+        "● AUTOR(ES)",
+        "● LUGAR Y FECHA",
+        "● PÁGINA DE RESPETO"
+      ]
+    },
+    {
+      "tipo": "lista",
+      "titulo": "INFORMACIÓN BÁSICA",
+      "items": [
+        "FACULTAD",
+        "UNIDAD DE INVESTIGACIÓN",
+        "AUTOR (es) / CÓDIGO ORCID / DNI",
+        "ASESOR y CO ASESOR",
+        "LUGAR DE EJECUCIÓN",
+        "UNIDAD DE ANÁLISIS",
+        "TIPO / ENFOQUE / DISEÑO",
+        "TEMA OCDE"
+      ]
+    },
+    {
+      "tipo": "indice",
+      "titulo": "ÍNDICE",
+      "subtitulo": "(contenido, tablas, figuras, abreviaturas)",
+      "items": [
+        {"texto": "INTRODUCCIÓN", "indent": 0, "bold": true},
+        {"texto": "I. PLANTEAMIENTO DEL PROBLEMA", "indent": 0, "bold": true},
+        {"texto": "1.1. Realidad problemática", "indent": 1, "bold": false},
+        {"texto": "1.2. Formulación del problema", "indent": 1, "bold": false},
+        {"texto": "1.3. Objetivos", "indent": 1, "bold": false},
+        {"texto": "1.4. Justificación", "indent": 1, "bold": false},
+        {"texto": "1.5. Delimitantes", "indent": 1, "bold": false},
+        {"texto": "II. MARCO TEÓRICO", "indent": 0, "bold": true},
+        {"texto": "2.1. Antecedentes", "indent": 1, "bold": false},
+        {"texto": "2.2. Bases teóricas", "indent": 1, "bold": false},
+        {"texto": "2.3. Marco conceptual", "indent": 1, "bold": false},
+        {"texto": "2.4. Definición de términos", "indent": 1, "bold": false},
+        {"texto": "III. HIPÓTESIS Y VARIABLES", "indent": 0, "bold": true},
+        {"texto": "3.1. Hipótesis", "indent": 1, "bold": false},
+        {"texto": "3.1.1. Operacionalización", "indent": 2, "bold": false},
+        {"texto": "IV. METODOLOGÍA DEL PROYECTO", "indent": 0, "bold": true},
+        {"texto": "4.1. Diseño metodológico", "indent": 1, "bold": false},
+        {"texto": "4.2. Método de investigación", "indent": 1, "bold": false},
+        {"texto": "4.3. Población y muestra", "indent": 1, "bold": false},
+        {"texto": "4.4. Lugar de ejecución", "indent": 1, "bold": false},
+        {"texto": "4.5. Técnicas e instrumentos", "indent": 1, "bold": false},
+        {"texto": "4.6. Análisis de datos", "indent": 1, "bold": false},
+        {"texto": "4.7. Aspectos Éticos", "indent": 1, "bold": false},
+        {"texto": "V. CRONOGRAMA", "indent": 0, "bold": true},
+        {"texto": "VI. PRESUPUESTO", "indent": 0, "bold": true},
+        {"texto": "VII. REFERENCIAS", "indent": 0, "bold": true},
+        {"texto": "VIII. ANEXOS", "indent": 0, "bold": true}
+      ]
+    },
+    {
+      "tipo": "contenido_detallado",
+      "capitulos": [
+        {
+          "titulo": "INTRODUCCIÓN",
+          "secciones": [
+            {"sub": "", "texto": "Breve presentación del contenido y relevancia del proyecto de investigación."}
+          ]
+        },
+        {
+          "titulo": "I. PLANTEAMIENTO DEL PROBLEMA",
+          "secciones": [
+            {"sub": "1.1. Realidad problemática", "texto": "Contexto de las líneas de investigación prioritarias de la UNAC."},
+            {"sub": "1.2. Formulación del problema", "texto": "Definición clara del problema general y los específicos."},
+            {"sub": "1.3. Objetivos", "texto": "Objetivo general y objetivos específicos alineados a la investigación."},
+            {"sub": "1.4. Justificación", "texto": "Sustento teórico, práctico y metodológico del estudio."},
+            {"sub": "1.5. Delimitantes", "texto": "Alcance teórico, temporal y espacial."}
+          ]
+        },
+        {
+          "titulo": "II. MARCO TEÓRICO",
+          "secciones": [
+            {"sub": "2.1. Antecedentes", "texto": "Investigaciones previas internacionales y nacionales de los últimos 5 años."},
+            {"sub": "2.2. Bases teóricas", "texto": "Teorías sustantivas que respaldan las variables de estudio."},
+            {"sub": "2.3. Marco conceptual", "texto": "Constructos fundamentales basados en la literatura científica."},
+            {"sub": "2.4. Definición de términos", "texto": "Glosario de términos técnicos utilizados."}
+          ]
+        },
+        {
+          "titulo": "III. HIPÓTESIS Y VARIABLES",
+          "secciones": [
+            {"sub": "3.1. Hipótesis", "texto": "Hipótesis general y específicas derivadas del problema."},
+            {"sub": "3.1.1. Operacionalización", "texto": "Matriz con variables, dimensiones, indicadores e instrumentos."}
+          ]
+        },
+        {
+          "titulo": "IV. METODOLOGÍA DEL PROYECTO",
+          "secciones": [
+            {"sub": "4.1. Diseño metodológico", "texto": "Tipo de diseño (Experimental / No experimental)."},
+            {"sub": "4.2. Método de investigación", "texto": "Inductivo, deductivo, analítico, etc."},
+            {"sub": "4.3. Población y muestra", "texto": "Criterios de inclusión y exclusión."},
+            {"sub": "4.5. Técnicas e instrumentos", "texto": "Encuestas, guías de observación o software de medición."},
+            {"sub": "4.7. Aspectos Éticos", "texto": "Consentimiento informado y normas de ética en investigación."}
+          ]
+        },
+        {
+          "titulo": "V. CRONOGRAMA",
+          "secciones": [{"sub": "", "texto": "Diagrama de Gantt detallado por meses."}]
+        },
+        {
+          "titulo": "VI. PRESUPUESTO",
+          "secciones": [{"sub": "", "texto": "Costos directos e indirectos del proyecto."}]
+        },
+        {
+          "titulo": "VII. REFERENCIAS",
+          "secciones": [{"sub": "", "texto": "Listado bajo norma APA, Vancouver o IEEE."}]
+        },
+        {
+          "titulo": "VIII. ANEXOS",
+          "secciones": [{"sub": "", "texto": "Matriz de consistencia e instrumentos."}]
+        }
+      ]
+    }
+  ]
+}
