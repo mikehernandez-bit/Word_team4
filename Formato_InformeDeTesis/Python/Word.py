@@ -1,14 +1,34 @@
+import tkinter as tk
+from tkinter import messagebox, ttk
+import json
+import os
+import platform
+import subprocess
+import threading
 from docx import Document
 from docx.shared import Cm, Pt, Inches, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
-import os
-import platform
-import subprocess
+
+# ==========================================
+# 1. LÓGICA DE GENERACIÓN (BACKEND)
+# ==========================================
+
+def cargar_contenido(nombre_archivo_json):
+    ruta_script = os.path.dirname(__file__)
+    # CORRECCIÓN: Aseguramos que busque en la carpeta 'formats' subiendo un nivel
+    ruta_json = os.path.join(ruta_script, "..", "formats", nombre_archivo_json)
+    ruta_absoluta = os.path.abspath(ruta_json)
+    
+    if not os.path.exists(ruta_absoluta):
+        raise FileNotFoundError(f"No se encontró el archivo: {ruta_absoluta}")
+
+    with open(ruta_absoluta, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
 def configurar_formato_unac(doc):
-    """Configura A4, Márgenes UNAC (3.5 izq) y estilo Arial 12"""
+    """Configura márgenes y fuente base Arial 12"""
     for section in doc.sections:
         section.page_width = Cm(21.0)
         section.page_height = Cm(29.7)
@@ -21,18 +41,16 @@ def configurar_formato_unac(doc):
     font = style.font
     font.name = 'Arial'
     font.size = Pt(12)
-    # Forzar Arial en Word
     rFonts = style.element.rPr.rFonts
     rFonts.set(qn('w:ascii'), 'Arial')
     rFonts.set(qn('w:hAnsi'), 'Arial')
-    
     style.paragraph_format.line_spacing_rule = WD_LINE_SPACING.ONE_POINT_FIVE
     style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
 
 def agregar_bloque(doc, texto, negrita=False, tamano=12, antes=0, despues=0, cursiva=False):
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE # Carátula con espacio simple para control total
+    p.paragraph_format.line_spacing_rule = WD_LINE_SPACING.SINGLE 
     p.paragraph_format.space_before = Pt(antes)
     p.paragraph_format.space_after = Pt(despues)
     run = p.add_run(texto)
@@ -41,13 +59,34 @@ def agregar_bloque(doc, texto, negrita=False, tamano=12, antes=0, despues=0, cur
     run.font.size = Pt(tamano)
     return p
 
-def crear_caratula_elegante(doc):
-    # 1. ENCABEZADO (Impacto Institucional)
-    agregar_bloque(doc, "UNIVERSIDAD NACIONAL DEL CALLAO", negrita=True, tamano=18, despues=4)
-    agregar_bloque(doc, "FACULTAD DE [NOMBRE DE LA FACULTAD]", negrita=True, tamano=14, despues=4)
-    agregar_bloque(doc, "ESCUELA PROFESIONAL DE [NOMBRE DE LA ESCUELA]", negrita=True, tamano=14, despues=25)
+def agregar_titulo_formal(doc, texto, espaciado_antes=0):
+    h = doc.add_heading(level=1)
+    h.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = h.add_run(texto)
+    run.font.name = 'Arial'
+    run.font.size = Pt(14)
+    run.bold = True
+    run.font.color.rgb = RGBColor(0, 0, 0)
+    h.paragraph_format.space_before = Pt(espaciado_antes)
+    h.paragraph_format.space_after = Pt(12)
 
-    # 2. LOGO (GRANDE Y CENTRADO)
+def agregar_nota_guia(doc, texto):
+    if not texto: return
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+    run = p.add_run(f"Nota: {texto}")
+    run.font.name = 'Arial'
+    run.font.size = Pt(10)
+    run.italic = True
+    run.font.color.rgb = RGBColor(89, 89, 89) 
+    p.paragraph_format.space_after = Pt(12)
+
+def crear_caratula_dinamica(doc, data):
+    c = data['caratula']
+    agregar_bloque(doc, c['universidad'], negrita=True, tamano=18, despues=4)
+    agregar_bloque(doc, c['facultad'], negrita=True, tamano=14, despues=4)
+    agregar_bloque(doc, c['escuela'], negrita=True, tamano=14, despues=25)
+
     ruta_script = os.path.dirname(__file__)
     ruta_logo = os.path.join(ruta_script, "..", "Imagenes", "LogoUNAC.png")
     
@@ -55,116 +94,76 @@ def crear_caratula_elegante(doc):
         p_logo = doc.add_paragraph()
         p_logo.alignment = WD_ALIGN_PARAGRAPH.CENTER
         run_logo = p_logo.add_run()
-        # Aumentado a 3.2 pulgadas para máxima elegancia
         run_logo.add_picture(ruta_logo, width=Inches(3.2))
     else:
         agregar_bloque(doc, "[LOGO INSTITUCIONAL]", tamano=10, antes=40, despues=40)
 
-    # 3. TÍTULO DEL DOCUMENTO
-    agregar_bloque(doc, "INFORME DE TESIS", negrita=True, tamano=16, antes=30)
+    agregar_bloque(doc, c['tipo_documento'], negrita=True, tamano=16, antes=30)
+    agregar_bloque(doc, c['titulo_placeholder'], negrita=True, tamano=14, antes=30, despues=30)
+    agregar_bloque(doc, c['frase_grado'], tamano=12, antes=10)
+    agregar_bloque(doc, c['grado_objetivo'], negrita=True, tamano=13, despues=35)
     
-    # El título en mayúsculas, negrita y con espacio generoso
-    titulo_placeholder = '"[ESCRIBA AQUÍ EL TÍTULO DE LA TESIS EN MAYÚSCULAS Y ENTRE COMILLAS]"'
-    agregar_bloque(doc, titulo_placeholder, negrita=True, tamano=14, antes=30, despues=30)
-
-    # 4. GRADO ACADÉMICO
-    agregar_bloque(doc, "PARA OPTAR EL TÍTULO PROFESIONAL DE:", tamano=12, antes=10)
-    agregar_bloque(doc, "[INGENIERO DE ...]", negrita=True, tamano=13, despues=35)
-
-    # 5. BLOQUE DE AUTORES (Presentación limpia)
-    agregar_bloque(doc, "AUTOR: [NOMBRES Y APELLIDOS]", negrita=True, tamano=12, antes=5)
-    agregar_bloque(doc, "ASESOR: [NOMBRES Y APELLIDOS]", negrita=True, tamano=12, antes=5, despues=20)
+    agregar_bloque(doc, c['label_autor'], negrita=True, tamano=12, antes=5)
+    agregar_bloque(doc, c['label_asesor'], negrita=True, tamano=12, antes=5, despues=20)
+    agregar_bloque(doc, c['label_linea'], tamano=11, cursiva=True, despues=40)
     
-    agregar_bloque(doc, "LÍNEA DE INVESTIGACIÓN: [NOMBRE DE LA LÍNEA]", tamano=11, cursiva=True, despues=40)
+    agregar_bloque(doc, c['fecha'], tamano=12)
+    agregar_bloque(doc, c['pais'], negrita=True, tamano=12)
 
-    # 6. PIE DE PÁGINA
-    agregar_bloque(doc, "Callao, 2026", tamano=12)
-    agregar_bloque(doc, "PERÚ", negrita=True, tamano=12)
-
-def agregar_contenido_preliminar(doc):
-    """
-    Estructura las secciones preliminares y unifica los índices en una sola hoja
-    según la normativa UNAC.
-    """
-    # --- 1. HOJA DE RESPETO (Blanca) ---
-    # ELIMINAMOS el doc.add_page_break() que estaba aquí arriba
+def agregar_preliminares_dinamico(doc, data):
+    p = data['preliminares']
+    
     doc.add_paragraph() 
-    doc.add_page_break() # Este salto de página separa la hoja de respeto de la Dedicatoria
+    doc.add_page_break() 
 
-    # Función interna para Títulos Formales (Arial 14, Negrita, Negro)
-    def agregar_titulo_formal(texto, espaciado_antes=0):
+    if 'dedicatoria' in p:
+        agregar_titulo_formal(doc, p['dedicatoria']['titulo'])
+        doc.add_paragraph(p['dedicatoria']['texto']).alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+        doc.add_page_break()
+
+    if 'resumen' in p:
+        agregar_titulo_formal(doc, p['resumen']['titulo'])
+        if 'nota' in p['resumen']:
+            p_nota = doc.add_paragraph()
+            p_nota.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            run_nota = p_nota.add_run(p['resumen']['nota'])
+            run_nota.italic = True
+            run_nota.font.size = Pt(11)
+        doc.add_paragraph(p['resumen']['texto']).alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+        doc.add_page_break()
+
+    idx = p['indices']
+    agregar_titulo_formal(doc, idx['contenido'])
+    doc.add_paragraph(idx.get('placeholder', '(Generarlo)')).alignment = WD_ALIGN_PARAGRAPH.CENTER
+    
+    if 'tablas' in idx:
+        agregar_titulo_formal(doc, idx['tablas'], espaciado_antes=30)
+        doc.add_paragraph(idx.get('placeholder', '(Generarlo)')).alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+    if 'figuras' in idx:
+        agregar_titulo_formal(doc, idx['figuras'], espaciado_antes=30)
+        doc.add_paragraph(idx.get('placeholder', '(Generarlo)')).alignment = WD_ALIGN_PARAGRAPH.CENTER
+        
+    if 'abreviaturas' in idx:
+        agregar_titulo_formal(doc, idx['abreviaturas'], espaciado_antes=30)
+        doc.add_paragraph(idx.get('placeholder', '(Generarlo)')).alignment = WD_ALIGN_PARAGRAPH.CENTER
+    
+    doc.add_page_break()
+    
+    if 'introduccion' in p:
+        agregar_titulo_formal(doc, p['introduccion']['titulo'])
+        par_intro = doc.add_paragraph()
+        par_intro.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
+        par_intro.add_run(p['introduccion']['texto'])
+        doc.add_page_break()
+
+def agregar_cuerpo_dinamico(doc, data):
+    caps = data['cuerpo']
+
+    for cap in caps:
         h = doc.add_heading(level=1)
         h.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = h.add_run(texto)
-        run.font.name = 'Arial'
-        run.font.size = Pt(14)
-        run.bold = True
-        run.font.color.rgb = RGBColor(0, 0, 0)
-        h.paragraph_format.space_before = Pt(espaciado_antes)
-        h.paragraph_format.space_after = Pt(12)
-
-    # --- 2. DEDICATORIA / AGRADECIMIENTO ---
-    agregar_titulo_formal("DEDICATORIA / AGRADECIMIENTO")
-    doc.add_paragraph("[Escriba aquí su dedicatoria o agradecimientos...]").alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-    doc.add_page_break()
-
-    # --- 3. RESUMEN / ABSTRACT ---
-    agregar_titulo_formal("RESUMEN / ABSTRACT")
-    
-    # Nota técnica según directiva
-    p_nota = doc.add_paragraph()
-    p_nota.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run_nota = p_nota.add_run("Nota: Síntesis de objetivos, métodos y resultados principales.")
-    run_nota.italic = True
-    run_nota.font.size = Pt(11)
-    
-    doc.add_paragraph("\n[Escriba aquí el cuerpo del resumen...]").alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-    doc.add_page_break()
-
-    # --- 4. HOJA DE ÍNDICES UNIFICADA ---
-    # Título principal de la sección de índices (opcional)
-    
-    # Índice de Contenido
-    agregar_titulo_formal("ÍNDICE DE CONTENIDO")
-    p_gen_cont = doc.add_paragraph("(Generarlo)")
-    p_gen_cont.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-    # Índice de Tablas (Misma hoja)
-    agregar_titulo_formal("ÍNDICE DE TABLAS", espaciado_antes=30)
-    p_gen_tab = doc.add_paragraph("(Generarlo)")
-    p_gen_tab.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-    # Índice de Figuras (Misma hoja)
-    agregar_titulo_formal("ÍNDICE DE FIGURAS", espaciado_antes=30)
-    p_gen_fig = doc.add_paragraph("(Generarlo)")
-    p_gen_fig.alignment = WD_ALIGN_PARAGRAPH.CENTER
-
-    # Índice de Abreviaturas (Misma hoja)
-    agregar_titulo_formal("ÍNDICE DE ABREVIATURAS", espaciado_antes=30)
-    p_gen_abr = doc.add_paragraph("(Generarlo)")
-    p_gen_abr.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    
-    doc.add_page_break()
-    
-    # --- 5. INTRODUCCIÓN (En hoja nueva) ---
-    agregar_titulo_formal("INTRODUCCIÓN")
-    
-    p_intro = doc.add_paragraph()
-    p_intro.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-    p_intro.add_run("[Escriba aquí la introducción de su tesis. La introducción debe presentar de manera general el tema, el propósito de la investigación y la estructura del trabajo documental.]")
-    
-    doc.add_page_break()
-
-def agregar_cuerpo_informe(doc):
-    """
-    Agrega los capítulos del I al VI con subtítulos oficiales 
-    y notas guía elegantes.
-    """
-    
-    def agregar_titulo_capitulo(texto):
-        h = doc.add_heading(level=1)
-        h.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = h.add_run(texto)
+        run = h.add_run(cap['titulo'])
         run.font.name = 'Arial'
         run.font.size = Pt(14)
         run.bold = True
@@ -172,160 +171,75 @@ def agregar_cuerpo_informe(doc):
         h.paragraph_format.space_before = Pt(24)
         h.paragraph_format.space_after = Pt(18)
 
-    def agregar_subtitulo(texto):
-        p = doc.add_paragraph()
-        run = p.add_run(texto)
-        run.font.name = 'Arial'
-        run.font.size = Pt(12)
-        run.bold = True
-        p.paragraph_format.space_before = Pt(12)
-        p.paragraph_format.space_after = Pt(6)
+        if 'nota_capitulo' in cap:
+             agregar_nota_guia(doc, cap['nota_capitulo'])
 
-    def agregar_nota_guia(texto):
-        p = doc.add_paragraph()
-        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-        run = p.add_run(f"Nota: {texto}")
-        run.font.name = 'Arial'
-        run.font.size = Pt(10)
-        run.italic = True
-        # Gris oscuro para elegancia
-        run.font.color.rgb = RGBColor(89, 89, 89) 
-        p.paragraph_format.space_after = Pt(12)
+        if 'contenido' in cap:
+            for item in cap['contenido']:
+                sub = doc.add_paragraph()
+                run_sub = sub.add_run(item['texto'])
+                run_sub.font.name = 'Arial'
+                run_sub.font.size = Pt(12)
+                run_sub.bold = True
+                sub.paragraph_format.space_before = Pt(12)
+                sub.paragraph_format.space_after = Pt(6)
+                
+                if 'nota' in item:
+                    agregar_nota_guia(doc, item['nota'])
+        
+        doc.add_page_break()
 
-    # --- CAPÍTULO I: PLANTEAMIENTO DEL PROBLEMA ---
-    agregar_titulo_capitulo("I. PLANTEAMIENTO DEL PROBLEMA")
-    
-    agregar_subtitulo("1.1 Descripción de la realidad problemática")
-    agregar_nota_guia("Describa la situación actual del problema a nivel macro, meso y micro.")
-    
-    agregar_subtitulo("1.2 Formulación del problema")
-    agregar_subtitulo("1.3 Objetivos (General y específicos)")
-    agregar_subtitulo("1.4 Justificación")
-    agregar_subtitulo("1.5 Delimitantes de la investigación")
+def agregar_finales_dinamico(doc, data):
+    fin = data['finales']
+
+    ref = fin['referencias']
+    agregar_titulo_formal(doc, ref['titulo'])
+    if 'nota' in ref: agregar_nota_guia(doc, ref['nota'])
+    if 'ejemplo' in ref: doc.add_paragraph(ref['ejemplo'])
     doc.add_page_break()
 
-    # --- CAPÍTULO II: MARCO TEÓRICO ---
-    agregar_titulo_capitulo("II. MARCO TEÓRICO")
+    anx = fin['anexos']
+    agregar_titulo_formal(doc, anx['titulo_seccion'])
+
+    for anexo in anx['lista']:
+        p_anexo = doc.add_paragraph()
+        run_anx = p_anexo.add_run(anexo['titulo'])
+        run_anx.bold = True
+        
+        if 'nota' in anexo:
+            agregar_nota_guia(doc, anexo['nota'])
+        
+        if 'tabla_headers' in anexo:
+            table = doc.add_table(rows=1, cols=len(anexo['tabla_headers']))
+            table.style = 'Table Grid'
+            hdr_cells = table.rows[0].cells
+            for idx, txt in enumerate(anexo['tabla_headers']):
+                hdr_cells[idx].text = txt
+                hdr_cells[idx].paragraphs[0].runs[0].bold = True
+            
+        doc.add_paragraph()
     
-    agregar_subtitulo("2.1 Antecedentes (Internacional y nacional)")
-    agregar_nota_guia("Incluir tesis y artículos científicos relacionados (últimos 5 años).")
-    
-    agregar_subtitulo("2.2 Bases teóricas")
-    agregar_subtitulo("2.3 Marco conceptual")
-    agregar_subtitulo("2.4 Definición de términos básicos")
     doc.add_page_break()
 
-    # --- CAPÍTULO III: METODOLOGÍA ---
-    agregar_titulo_capitulo("III. METODOLOGÍA")
-    agregar_subtitulo("3.1 Tipo y diseño de investigación")
-    agregar_subtitulo("3.2 Método de investigación")
-    agregar_subtitulo("3.3 Población y muestra")
-    agregar_subtitulo("3.4 Lugar de estudio y periodo")
-    agregar_subtitulo("3.5 Técnicas e instrumentos de recolección")
-    agregar_subtitulo("3.6 Análisis y procesamiento de datos")
-    doc.add_page_break()
-
-    # --- CAPÍTULO IV: RESULTADOS Y DISCUSIÓN ---
-    agregar_titulo_capitulo("IV. RESULTADOS Y DISCUSIÓN")
-    
-    agregar_subtitulo("4.1 Presentación de resultados")
-    agregar_nota_guia("Contrastación con estadística descriptiva e inferencial.")
-    
-    agregar_subtitulo("4.2 Contrastación de hipótesis")
-    
-    agregar_subtitulo("4.3 Discusión de resultados")
-    agregar_nota_guia("Comparación de hallazgos con antecedentes y bases teóricas.")
-    doc.add_page_break()
-
-    # --- CAPÍTULO V: CONCLUSIONES ---
-    agregar_titulo_capitulo("V. CONCLUSIONES")
-    agregar_nota_guia("Mínimo una conclusión por cada objetivo específico.")
-    doc.add_page_break()
-
-    # --- CAPÍTULO VI: RECOMENDACIONES ---
-    agregar_titulo_capitulo("VI. RECOMENDACIONES")
-    agregar_nota_guia("Sugerencias metodológicas, académicas y prácticas.")
-
-def agregar_referencias_y_anexos(doc):
-    """
-    Agrega las secciones finales del informe: Referencias y Anexos.
-    """
-    
-    def agregar_titulo_final(texto):
-        h = doc.add_heading(level=1)
-        h.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = h.add_run(texto)
-        run.font.name = 'Arial'
-        run.font.size = Pt(14)
-        run.bold = True
-        run.font.color.rgb = RGBColor(0, 0, 0)
-        h.paragraph_format.space_before = Pt(24)
-        h.paragraph_format.space_after = Pt(18)
-
-    def agregar_nota_guia(texto):
-        p = doc.add_paragraph()
-        p.alignment = WD_ALIGN_PARAGRAPH.JUSTIFY
-        run = p.add_run(f"Nota: {texto}")
-        run.font.name = 'Arial'
-        run.font.size = Pt(10)
-        run.italic = True
-        run.font.color.rgb = RGBColor(89, 89, 89)
-        p.paragraph_format.space_after = Pt(12)
-
-    # --- VII. REFERENCIAS BIBLIOGRÁFICAS ---
-    agregar_titulo_final("VII. REFERENCIAS BIBLIOGRÁFICAS")
-    agregar_nota_guia("Utilice gestores como Mendeley o Zotero. Para Ingeniería se recomienda IEEE, para otras facultades APA 7ma edición.")
-    doc.add_paragraph("1.\tAPELLIDO, Nombre. \"Título del artículo\". Editorial, Año.\n"
-                      "2.\tAPELLIDO, Nombre. \"Título del libro\". Ciudad: Editorial, Año.")
-    doc.add_page_break()
-
-    # --- VIII. ANEXOS ---
-    agregar_titulo_final("VIII. ANEXOS")
-    
-    # Anexo 1: Matriz de Consistencia
-    p_anexo1 = doc.add_paragraph()
-    run_a1 = p_anexo1.add_run("Anexo 1: Matriz de Consistencia")
-    run_a1.bold = True
-    agregar_nota_guia("La matriz debe resumir todo el proyecto. Columnas: Problemas, Objetivos, Hipótesis, Variables, Metodología.")
-    
-    # Crear una tabla base para la Matriz de Consistencia
-    table = doc.add_table(rows=1, cols=5)
-    table.style = 'Table Grid'
-    hdr_cells = table.rows[0].cells
-    for i, txt in enumerate(['Problemas', 'Objetivos', 'Hipótesis', 'Variables', 'Metodología']):
-        hdr_cells[i].text = txt
-        hdr_cells[i].paragraphs[0].runs[0].bold = True
-    
-    doc.add_paragraph() # Espacio
-
-    # Anexo 2: Instrumentos
-    p_anexo2 = doc.add_paragraph()
-    run_a2 = p_anexo2.add_run("Anexo 2: Instrumento de recolección de datos")
-    run_a2.bold = True
-    agregar_nota_guia("Adjunte aquí el cuestionario, guía de entrevista o ficha técnica de los equipos/sensores utilizados.")
-    
-    doc.add_paragraph() # Espacio
-
-    # Anexo 3: Validación
-    p_anexo3 = doc.add_paragraph()
-    run_a3 = p_anexo3.add_run("Anexo 3: Validación de instrumento (Certificado de expertos)")
-    run_a3.bold = True
-    agregar_nota_guia("Incluya las fichas firmadas por los 3 expertos que validaron su instrumento antes de la aplicación.")
-
-    doc.add_page_break()
-    
 def agregar_numeracion_paginas(doc):
     """
-    Agrega numeración de páginas centrada en el pie de página.
-    Nota: La numeración romana vs arábiga avanzada requiere secciones 
-    manuales en Word, por lo que aplicaremos la estándar oficial (arábiga).
+    Agrega numeración de páginas en la parte INFERIOR DERECHA.
+    Según el PDF normativo: 'Numeración de páginas: inferior derecho'.
     """
     for section in doc.sections:
         footer = section.footer
-        p = footer.paragraphs[0]
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        # Limpiamos el párrafo existente si hay alguno para evitar conflictos
+        if footer.paragraphs:
+            p = footer.paragraphs[0]
+            p.clear()
+        else:
+            p = footer.add_paragraph()
+            
+        # CORRECCIÓN CLAVE: Alineación a la DERECHA
+        p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
         
-        # Inicio del campo de numeración
+        run = p.add_run()
+        # Campo complejo para el número de página
         fldChar1 = OxmlElement('w:fldChar')
         fldChar1.set(qn('w:fldCharType'), 'begin')
         
@@ -336,57 +250,134 @@ def agregar_numeracion_paginas(doc):
         fldChar2 = OxmlElement('w:fldChar')
         fldChar2.set(qn('w:fldCharType'), 'end')
         
-        run = p.add_run()
         run._r.append(fldChar1)
         run._r.append(instrText)
         run._r.append(fldChar2)
+        
+        # Formato de la fuente del número
         run.font.name = 'Arial'
-        run.font.size = Pt(10) 
+        run.font.size = Pt(10) # Estándar limpio
 
-def generar_tesis_pro():
+# --- Lógica Principal del Hilo ---
+def logica_generacion(tipo, label_status, root):
     try:
-        doc = Document()
-        # 1. Configuración de márgenes (3.5cm Izq) y fuente Arial
-        configurar_formato_unac(doc)
+        label_status.config(text="⏳ Generando estructura...", fg="#f1c40f")
         
-        # 2. Carátula Profesional (Diseño UNAC)
-        crear_caratula_elegante(doc)
-        
-        # 3. Secciones Preliminares e Introducción
-        agregar_contenido_preliminar(doc)
-        
-        # 4. Cuerpo del Informe (Capítulos I al VI)
-        agregar_cuerpo_informe(doc)
-        
-        # 5. Referencias y Anexos (Puntos VII y VIII)
-        agregar_referencias_y_anexos(doc)
+        if tipo == "CUANTI":
+            nombre_json = "tesis_content_cuantitativo.json"
+            nombre_salida = "Tesis_Cuantitativa_UNAC.docx"
+        else:
+            nombre_json = "tesis_content_cualitativa.json"
+            nombre_salida = "Tesis_Cualitativa_UNAC.docx"
 
-        # --- NUEVO: AGREGAR NUMERACIÓN DE PÁGINAS ---
-        # Se llama antes de guardar para que se aplique a todas las secciones
+        data = cargar_contenido(nombre_json)
+        doc = Document()
+        
+        configurar_formato_unac(doc)
+        crear_caratula_dinamica(doc, data)
+        agregar_preliminares_dinamico(doc, data)
+        agregar_cuerpo_dinamico(doc, data)
+        agregar_finales_dinamico(doc, data)
+        
+        # IMPORTANTE: La numeración se agrega al final para aplicarse a todas las secciones
         agregar_numeracion_paginas(doc)
         
-        # --- PROCESO DE GUARDADO SEGURO ---
-        nombre = "Estructura_Informe_de_Tesis_Pregrado.docx"
-        ruta_final = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", nombre))
+        ruta_final = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", nombre_salida))
         
         try:
             doc.save(ruta_final)
         except PermissionError:
-            print("❌ ERROR: El archivo Word ya está abierto. Ciérralo y vuelve a ejecutar.")
+            messagebox.showerror("Error", "⚠️ El archivo Word está abierto.\nPor favor, ciérralo e intenta de nuevo.")
+            label_status.config(text="❌ Archivo abierto bloqueado", fg="red")
             return
 
-        print(f"✅ ¡Estructura de Tesis Generada con éxito!")
-        print(f"📍 Ubicación: {ruta_final}")
+        label_status.config(text="✅ ¡Generado con Éxito!", fg="#2ecc71")
         
-        # --- APERTURA AUTOMÁTICA ---
         if platform.system() == 'Windows':
             os.startfile(ruta_final)
         else:
             cmd = 'open' if platform.system() == 'Darwin' else 'xdg-open'
             subprocess.call((cmd, ruta_final))
+        
+        # Cierra la ventana después de 1 segundo para una experiencia fluida
+        root.after(1000, root.destroy) 
             
     except Exception as e:
-        print(f"❌ Error crítico en el flujo principal: {e}")
+        messagebox.showerror("Error Crítico", f"Ocurrió un error:\n{e}")
+        label_status.config(text="❌ Error crítico", fg="red")
+
+# ==========================================
+# 2. INTERFAZ GRÁFICA (FRONTEND ELEGANTE)
+# ==========================================
+
+def iniciar_app():
+    root = tk.Tk()
+    root.title("Generador de Tesis UNAC")
+    root.geometry("500x650")
+    root.resizable(False, False)
+    
+    COLOR_FONDO = "#1a253a"
+    COLOR_TEXTO = "#ecf0f1"
+    COLOR_DORADO = "#f39c12"
+    COLOR_BTN_BG = "#34495e"
+    
+    root.configure(bg=COLOR_FONDO)
+
+    main_frame = tk.Frame(root, bg=COLOR_FONDO)
+    main_frame.pack(expand=True, fill="both", padx=20, pady=20)
+
+    lbl_titulo = tk.Label(main_frame, text="INFORME DE TESIS\nPREGRADO", 
+                          font=("Helvetica", 22, "bold"), 
+                          bg=COLOR_FONDO, fg=COLOR_TEXTO, justify="center")
+    lbl_titulo.pack(pady=(20, 5))
+
+    lbl_sub = tk.Label(main_frame, text="UNAC", 
+                       font=("Times New Roman", 20, "bold"), 
+                       bg=COLOR_FONDO, fg=COLOR_DORADO, justify="center")
+    lbl_sub.pack(pady=(0, 20))
+
+    ruta_script = os.path.dirname(__file__)
+    ruta_logo_png = os.path.join(ruta_script, "..", "Imagenes", "LogoUNAC.png")
+    
+    logo_frame = tk.Frame(main_frame, bg=COLOR_FONDO, height=150)
+    logo_frame.pack(pady=10)
+
+    try:
+        img_raw = tk.PhotoImage(file=ruta_logo_png)
+        img = img_raw.subsample(2, 2)
+        lbl_img = tk.Label(logo_frame, image=img, bg=COLOR_FONDO)
+        lbl_img.image = img 
+        lbl_img.pack()
+    except:
+        lbl_ph = tk.Label(logo_frame, text="[ LOGO UNAC ]", 
+                          font=("Arial", 12, "bold"), fg=COLOR_DORADO, bg=COLOR_FONDO,
+                          relief="groove", borderwidth=2, width=20, height=5)
+        lbl_ph.pack()
+
+    tk.Frame(main_frame, bg=COLOR_DORADO, height=2, width=300).pack(pady=20)
+
+    def on_enter(e): e.widget['background'] = COLOR_DORADO; e.widget['foreground'] = "#000"
+    def on_leave(e): e.widget['background'] = COLOR_BTN_BG; e.widget['foreground'] = "#fff"
+
+    def crear_boton_elegante(texto, funcion):
+        btn = tk.Button(main_frame, text=texto, font=("Segoe UI", 11, "bold"),
+                        bg=COLOR_BTN_BG, fg="white", 
+                        activebackground=COLOR_DORADO, activeforeground="black",
+                        relief="flat", cursor="hand2", width=30, height=2,
+                        command=lambda: threading.Thread(target=funcion).start())
+        btn.bind("<Enter>", on_enter)
+        btn.bind("<Leave>", on_leave)
+        btn.pack(pady=10)
+        return btn
+
+    crear_boton_elegante("ENFOQUE CUANTITATIVO", lambda: logica_generacion("CUANTI", lbl_status, root))
+    crear_boton_elegante("ENFOQUE CUALITATIVO", lambda: logica_generacion("CUALI", lbl_status, root))
+
+    lbl_status = tk.Label(main_frame, text="Sistema listo.", 
+                          font=("Arial", 10), bg=COLOR_FONDO, fg="#95a5a6")
+    lbl_status.pack(side="bottom", pady=20)
+
+    root.mainloop()
 
 if __name__ == "__main__":
-    generar_tesis_pro()
+    iniciar_app()
