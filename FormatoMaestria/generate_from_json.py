@@ -1,5 +1,7 @@
 import os
 import json
+import platform
+import subprocess
 from datetime import datetime
 
 from docx import Document
@@ -20,6 +22,14 @@ def load_json(path: str) -> dict:
 def resolve_path(base_dir: str, maybe_rel: str) -> str:
     return maybe_rel if os.path.isabs(maybe_rel) else os.path.join(base_dir, maybe_rel)
 
+def resolve_config_path(base_dir: str, config_path: str) -> str:
+    if os.path.isabs(config_path):
+        return config_path
+    candidate = os.path.join(base_dir, config_path)
+    if os.path.exists(candidate):
+        return candidate
+    return os.path.abspath(config_path)
+
 def ensure_dir(path: str):
     os.makedirs(path, exist_ok=True)
 
@@ -27,6 +37,17 @@ def ensure_dir(path: str):
 # -------------------------
 # WORD: SETUP / HELPERS
 # -------------------------
+
+def open_document(path: str):
+    try:
+        if platform.system() == "Windows":
+            os.startfile(path)
+        elif platform.system() == "Darwin":
+            subprocess.run(["open", path], check=False)
+        else:
+            subprocess.run(["xdg-open", path], check=False)
+    except Exception as exc:
+        print("[WARN] No se pudo abrir el documento:", exc)
 
 def set_page_setup(doc: Document, cfg: dict):
     page_setup = cfg.get("page_setup", {})
@@ -251,6 +272,11 @@ def update_catalog(base_dir: str, cfg: dict, output_path: str):
 
 def generate(config_path: str):
     base_dir = os.path.dirname(os.path.abspath(__file__))
+    config_path = resolve_config_path(base_dir, config_path)
+    if not os.path.exists(config_path):
+        print("Uso: python generate_from_json.py <ruta_config.json>")
+        print("No se encontro el archivo:", config_path)
+        raise SystemExit(1)
     cfg = load_json(config_path)
 
     # Documento
@@ -280,13 +306,15 @@ def generate(config_path: str):
     # Actualizar catálogo (metadatos reales)
     update_catalog(base_dir, cfg, output_path)
 
+    if cfg.get("open_after_generate", True):
+        open_document(output_path)
+
 
 if __name__ == "__main__":
     # Ejemplo:
     # python generate_from_json.py formats/unac_maestria_cuant.json
     import sys
-    if len(sys.argv) < 2:
-        print("Uso: python generate_from_json.py <ruta_config.json>")
-        raise SystemExit(1)
 
-    generate(sys.argv[1])
+    default_config = os.path.join("formats", "unac_maestria_cuant.json")
+    config_path = sys.argv[1] if len(sys.argv) > 1 else default_config
+    generate(config_path)
