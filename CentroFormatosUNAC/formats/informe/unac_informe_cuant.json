@@ -1,0 +1,162 @@
+{
+  "caratula": {
+    "universidad": "UNIVERSIDAD NACIONAL DEL CALLAO",
+    "facultad": "FACULTAD DE [NOMBRE DE LA FACULTAD]",
+    "escuela": "ESCUELA PROFESIONAL DE [NOMBRE DE LA ESCUELA]",
+    "tipo_documento": "INFORME DE TESIS (ENFOQUE CUALITATIVO)",
+    "titulo_placeholder": "\"[ESCRIBA AQUÍ EL TÍTULO DE LA TESIS CUALITATIVA]\"",
+    "frase_grado": "PARA OPTAR EL TÍTULO PROFESIONAL DE:",
+    "grado_objetivo": "[INGENIERO DE ...]",
+    "label_autor": "AUTOR: [NOMBRES Y APELLIDOS]",
+    "label_asesor": "ASESOR: [NOMBRES Y APELLIDOS]",
+    "label_linea": "LÍNEA DE INVESTIGACIÓN: [NOMBRE DE LA LÍNEA]",
+    "fecha": "Callao, 2026",
+    "pais": "PERÚ"
+  },
+  "preliminares": {
+    "dedicatoria": {
+      "titulo": "DEDICATORIA / AGRADECIMIENTO",
+      "texto": "[Escriba aquí su dedicatoria o agradecimientos...]"
+    },
+    "resumen": {
+      "titulo": "RESUMEN / ABSTRACT",
+      "nota": "Nota: Síntesis del objeto de estudio, metodología (diseño y participantes) y principales hallazgos o comprensiones del fenómeno.",
+      "texto": "\n[Escriba aquí el cuerpo del resumen...]"
+    },
+    "indices": {
+      "contenido": "ÍNDICE DE CONTENIDO",
+      "tablas": "ÍNDICE DE TABLAS / CATEGORÍAS",
+      "figuras": "ÍNDICE DE FIGURAS",
+      "placeholder": "(Generarlo)"
+    },
+    "introduccion": {
+      "titulo": "INTRODUCCIÓN",
+      "texto": "[Presentación general del fenómeno de estudio, el contexto, el propósito de la investigación y la estructura del trabajo.]"
+    }
+  },
+  "cuerpo": [
+    {
+      "titulo": "I. PLANTEAMIENTO DEL PROBLEMA",
+      "contenido": [
+        {
+          "texto": "1.1 Descripción de la realidad problemática", 
+          "nota": "Describa el contexto, la situación social o el fenómeno tal como se presenta en la realidad (Escenario)."
+        },
+        {
+          "texto": "1.2 Formulación del problema",
+          "nota": "Plantear las preguntas de investigación."
+        },
+        {
+          "texto": "1.3 Objetivos (General y específicos)",
+          "nota": "Orientados a comprender, analizar, interpretar o describir profundamente."
+        },
+        {
+          "texto": "1.4 Justificación",
+          "nota": "Relevancia social, teórica y metodológica."
+        },
+        {
+          "texto": "1.5 Delimitantes de la investigación"
+        }
+      ]
+    },
+    {
+      "titulo": "II. MARCO TEÓRICO REFERENCIAL",
+      "contenido": [
+        {
+          "texto": "2.1 Antecedentes (Internacional y nacional)", 
+          "nota": "Investigaciones previas que sirven de referencia, no necesariamente para contrastar numéricamente."
+        },
+        {
+          "texto": "2.2 Bases teóricas",
+          "nota": "Teorías sustantivas que sensibilizan al investigador frente al tema (perspectiva teórica)."
+        },
+        {
+          "texto": "2.3 Marco conceptual",
+          "nota": "Definición de las categorías preliminares de análisis."
+        }
+      ]
+    },
+    {
+      "titulo": "III. METODOLOGÍA",
+      "contenido": [
+        {
+          "texto": "3.1 Enfoque y Diseño de investigación", 
+          "nota": "Especifique si es Fenomenológico, Etnográfico, Estudio de Caso, Investigación-Acción, etc."
+        },
+        {
+          "texto": "3.2 Escenario de estudio y Participantes", 
+          "nota": "En lugar de 'Población y Muestra'. Describa el lugar y los informantes clave seleccionados (Muestreo teórico o por saturación)."
+        },
+        {
+          "texto": "3.3 Técnicas e instrumentos de recolección", 
+          "nota": "Entrevistas a profundidad, observación participante, grupos focales, historias de vida."
+        },
+        {
+          "texto": "3.4 Procedimiento de recolección de datos"
+        },
+        {
+          "texto": "3.5 Rigor científico", 
+          "nota": "Criterios de credibilidad, transferibilidad, dependencia y confirmabilidad (en reemplazo de validez y confiabilidad estadística)."
+        },
+        {
+          "texto": "3.6 Método de análisis de datos", 
+          "nota": "Triangulación, categorización, codificación, teoría fundamentada."
+        }
+      ]
+    },
+    {
+      "titulo": "IV. RESULTADOS Y DISCUSIÓN",
+      "contenido": [
+        {
+          "texto": "4.1 Presentación de resultados (Categorización)", 
+          "nota": "Presentación de los hallazgos organizados por categorías y subcategorías emergentes, con citas textuales de los participantes."
+        },
+        {
+          "texto": "4.2 Análisis e Interpretación (Triangulación)", 
+          "nota": "Diálogo entre los datos obtenidos, la teoría y la interpretación del investigador (Doble hermenéutica)."
+        },
+        {
+          "texto": "4.3 Discusión de resultados", 
+          "nota": "Contrastación de los hallazgos con los antecedentes y las bases teóricas."
+        }
+      ]
+    },
+    {
+      "titulo": "V. CONCLUSIONES",
+      "nota_capitulo": "Reflexiones finales sobre las comprensiones logradas, respondiendo a las preguntas de investigación."
+    },
+    {
+      "titulo": "VI. RECOMENDACIONES",
+      "nota_capitulo": "Sugerencias para futuras investigaciones o aplicaciones prácticas basadas en los hallazgos."
+    }
+  ],
+  "finales": {
+    "referencias": {
+      "titulo": "VII. REFERENCIAS BIBLIOGRÁFICAS",
+      "nota": "Utilice gestores como Mendeley o Zotero (APA / IEEE).",
+      "ejemplo": "1.\tAPELLIDO, Nombre. \"Título del artículo\". Editorial, Año.\n2.\tAPELLIDO, Nombre. \"Título del libro\". Ciudad: Editorial, Año."
+    },
+    "anexos": {
+      "titulo_seccion": "VIII. ANEXOS",
+      "lista": [
+        {
+          "titulo": "Anexo 1: Matriz de Categorización",
+          "nota": "En lugar de la Matriz de Consistencia clásica.",
+          "tabla_headers": ["Preguntas", "Objetivos", "Categorías", "Subcategorías", "Ítems/Fuentes"]
+        },
+        {
+          "titulo": "Anexo 2: Guía de Entrevista / Guía de Observación",
+          "nota": "Instrumentos cualitativos (preguntas abiertas, pautas de observación)."
+        },
+        {
+          "titulo": "Anexo 3: Consentimiento Informado",
+          "nota": "Documento donde los participantes aceptan voluntariamente ser parte del estudio."
+        },
+        {
+          "titulo": "Anexo 4: Validación de instrumentos (Juicio de expertos)",
+          "nota": "Si aplica, constancia de revisión de la guía de entrevista por expertos."
+        }
+      ]
+    }
+  }
+}
