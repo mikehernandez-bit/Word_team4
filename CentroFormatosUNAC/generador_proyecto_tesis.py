@@ -29,7 +29,7 @@ class SistemasHenyerEngine:
         self.conf = self.data.get('configuracion', {
             "fuente_normal": "Arial", 
             "tamano_normal": 11,
-            "ruta_logo": "logo_unac.png", # Nombre por defecto
+            "ruta_logo": "assets/LogoUNAC.png", # Nombre por defecto
             "color_encabezado": "D9D9D9",
             "fuente_tabla": "Arial Narrow",
             "tamano_tabla": 9
@@ -40,7 +40,7 @@ class SistemasHenyerEngine:
         Busca la imagen de forma inteligente:
         1. Intenta la ruta tal cual viene del JSON.
         2. Si falla, limpia la ruta y busca solo el nombre del archivo en la carpeta actual.
-        3. Si falla, intenta un nombre por defecto 'logo_unac.png'.
+        3. Si falla, intenta un nombre por defecto 'LogoUNAC.png'.
         """
         # Opción A: Ruta combinada (base_dir + ruta_json)
         # Esto fallaba antes porque duplicaba la carpeta 'Formato_ProyectoDeTesis'
@@ -56,7 +56,7 @@ class SistemasHenyerEngine:
             return path_B
 
         # Opción C: Fallback total
-        path_C = os.path.join(self.base_dir, "logo_unac.png")
+        path_C = os.path.join(self.base_dir, "assets", "LogoUNAC.png")
         if os.path.exists(path_C):
             return path_C
             
@@ -99,7 +99,7 @@ class SistemasHenyerEngine:
         p_logo.alignment = WD_ALIGN_PARAGRAPH.CENTER
         
         # 1. Obtenemos nombre del JSON o usamos default
-        nombre_logo = self.conf.get('ruta_logo', 'logo_unac.png')
+        nombre_logo = self.conf.get('ruta_logo', 'assets/LogoUNAC.png')
         # 2. Resolvemos la ruta absoluta con la nueva lógica inteligente
         ruta_logo = self._resolve_asset_path(nombre_logo)
 
